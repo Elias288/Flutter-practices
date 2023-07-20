@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/contact_class.dart';
-import 'package:flutter_application_1/text_box.dart';
+import 'package:flutter_crud/utils/contact.dart';
+import 'package:flutter_crud/utils/text_box.dart';
 
 class ModifyContact extends StatefulWidget {
   final Contact _contact;
@@ -25,6 +25,14 @@ class _ModifyContact extends State<ModifyContact> {
   }
 
   @override
+  void dispose() {
+    controllerName.dispose();
+    controllerSurName.dispose();
+    controllerPhone.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -42,7 +50,8 @@ class _ModifyContact extends State<ModifyContact> {
                 String phone = controllerPhone.text;
 
                 if (name.isNotEmpty && surname.isNotEmpty && phone.isNotEmpty) {
-                  Navigator.pop(context, Contact(name, phone, surname));
+                  Navigator.pop(context,
+                      Contact(name: name, phone: phone, surname: surname));
                 }
               },
               child: const Text("Save Contact")),

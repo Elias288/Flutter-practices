@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/contact_class.dart';
-import 'package:flutter_application_1/text_box.dart';
+import 'package:flutter_crud/utils/contact.dart';
+import 'package:flutter_crud/utils/text_box.dart';
 
 class RegisterContact extends StatefulWidget {
   const RegisterContact({super.key});
@@ -17,6 +17,14 @@ class _RegisterContact extends State<RegisterContact> {
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    controllerName.dispose();
+    controllerSurName.dispose();
+    controllerPhone.dispose();
+    super.dispose();
   }
 
   @override
@@ -37,7 +45,8 @@ class _RegisterContact extends State<RegisterContact> {
                 String phone = controllerPhone.text;
 
                 if (name.isNotEmpty && surname.isNotEmpty && phone.isNotEmpty) {
-                  Navigator.pop(context, Contact(name, phone, surname));
+                  Navigator.pop(context,
+                      Contact(name: name, phone: phone, surname: surname));
                 }
               },
               child: const Text("Save Contact")),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/contact_class.dart';
-import 'package:flutter_application_1/modify_contact.dart';
-import 'package:flutter_application_1/register_contact.dart';
-
-import 'message_response.dart';
+import 'package:flutter_crud/data/hive_data.dart';
+import 'package:flutter_crud/utils/contact.dart';
+import 'package:flutter_crud/utils/message_response.dart';
+import 'package:flutter_crud/pages/modify_contact.dart';
+import 'package:flutter_crud/pages/register_contact.dart';
 
 class MyHomePage extends StatefulWidget {
   final String _title;
@@ -13,7 +13,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePage extends State<MyHomePage> {
-  List<Contact> contacts = [Contact('Will', '099044224', 'Mora')];
+  HiveData hd = HiveData();
+
+  @override
+  void initState() {
+    hd.loadData();
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,19 +29,19 @@ class _MyHomePage extends State<MyHomePage> {
         title: Text(widget._title),
       ),
       body: ListView.builder(
-          itemCount: contacts.length,
+          itemCount: hd.contacts.length,
           itemBuilder: (context, index) {
             return ListTile(
               onTap: () {
                 Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (_) => ModifyContact(contacts[index])))
+                            builder: (_) => ModifyContact(hd.contacts[index])))
                     .then((newContact) {
                   if (newContact != null) {
                     setState(() {
-                      contacts.removeAt(index);
-                      contacts.insert(index, newContact);
+                      hd.contacts.removeAt(index);
+                      hd.contacts.insert(index, newContact);
                       messageResponse(
                           context, "${newContact.name} has been modified");
                     });
@@ -42,12 +49,13 @@ class _MyHomePage extends State<MyHomePage> {
                 });
               },
               onLongPress: () {
-                removeContact(context, contacts[index]);
+                removeContact(context, hd.contacts[index]);
               },
-              title: Text("${contacts[index].name} ${contacts[index].surname}"),
-              subtitle: Text(contacts[index].phone),
+              title: Text(
+                  "${hd.contacts[index].name} ${hd.contacts[index].surname}"),
+              subtitle: Text(hd.contacts[index].phone),
               leading: CircleAvatar(
-                child: Text(contacts[index].name.substring(0, 1)),
+                child: Text(hd.contacts[index].name.substring(0, 1)),
               ),
               trailing: const Icon(
                 Icons.call,
@@ -63,7 +71,8 @@ class _MyHomePage extends State<MyHomePage> {
                     if (newContact != null)
                       {
                         setState(() {
-                          contacts.add(newContact);
+                          hd.contacts.add(newContact);
+                          hd.updateDataBase();
                           messageResponse(context, "has been saved");
                         })
                       }
@@ -86,7 +95,8 @@ class _MyHomePage extends State<MyHomePage> {
                 TextButton(
                     onPressed: () {
                       setState(() {
-                        contacts.remove(contact);
+                        hd.contacts.remove(contact);
+                        hd.updateDataBase();
                         Navigator.pop(context);
                       });
                     },
