@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_crud/data/hive_data.dart';
 import 'package:flutter_crud/utils/contact.dart';
@@ -18,6 +20,7 @@ class _MyHomePage extends State<MyHomePage> {
   @override
   void initState() {
     hd.loadData();
+    inspect(hd.contacts);
 
     super.initState();
   }
@@ -86,29 +89,27 @@ class _MyHomePage extends State<MyHomePage> {
 
   removeContact(BuildContext context, Contact contact) {
     showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-              title: const Text("Delete Contact"),
-              content:
-                  Text("Are you shure to delete the contact ${contact.name}?"),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      setState(() {
-                        hd.contacts.remove(contact);
-                        hd.updateDataBase();
-                        Navigator.pop(context);
-                      });
-                    },
-                    child: const Text("Delete",
-                        style: TextStyle(color: Colors.red))),
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text("Cancel",
-                        style: TextStyle(color: Colors.blue)))
-              ],
-            ));
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text("Delete Contact"),
+        content: Text("Are you sure to delete the contact ${contact.name}?"),
+        actions: [
+          TextButton(
+              onPressed: () {
+                setState(() {
+                  hd.contacts.remove(contact);
+                  hd.updateDataBase();
+                  Navigator.pop(context);
+                });
+              },
+              child: const Text("Delete", style: TextStyle(color: Colors.red))),
+          TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("Cancel", style: TextStyle(color: Colors.blue)))
+        ],
+      ),
+    );
   }
 }
